@@ -1,5 +1,5 @@
 ---
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodSecurityPolicy
 metadata:
   name: jitsi-privileged
@@ -27,6 +27,28 @@ spec:
   - persistentVolumeClaim
   - projected
   - secret
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: jitsi-privileged
+#   namespace: jitsi
+# spec:
+#   podSelector:
+#     matchLabels:
+#       k8s-app: jitsi
+#   policyTypes:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - from:
+#     - podSelector:
+#         matchLabels:
+#           k8s-app: jitsi
+#   egress:
+#   - to:
+#     - ipBlock:
+#         cidr: 0.0.0.0/0
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role

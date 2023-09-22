@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: jicofo
-          image: jitsi/jicofo:stable-6826
+          image: jitsi/jicofo:stable-8719
           imagePullPolicy: IfNotPresent
           env:
             - name: XMPP_SERVER
@@ -52,11 +52,11 @@ spec:
                   name: jitsi-config
                   key: JICOFO_AUTH_PASSWORD
             - name: TZ
-              value: America/Los_Angeles
+              value: Asia/Seoul
             - name: JVB_BREWERY_MUC
               value: jvbbrewery
         - name: prosody
-          image: jitsi/prosody:stable-6826
+          image: jitsi/prosody:stable-8719
           imagePullPolicy: IfNotPresent
           env:
             - name: XMPP_DOMAIN
@@ -87,11 +87,13 @@ spec:
                   name: jitsi-config
                   key: JICOFO_AUTH_PASSWORD
             - name: TZ
-              value: America/Los_Angeles
+              value: Asia/Seoul
             - name: JVB_TCP_HARVESTER_DISABLED
               value: "true"
+            - name: PUBLIC_URL
+              value: "https://humble.istudiomeet.com"              
         - name: web
-          image: jitsi/web:stable-6826
+          image: jitsi/web:stable-8719
           imagePullPolicy: IfNotPresent
           env:
             - name: XMPP_SERVER
@@ -109,11 +111,13 @@ spec:
             - name: XMPP_MUC_DOMAIN
               value: muc.meet.jitsi
             - name: TZ
-              value: America/Los_Angeles
+              value: Asia/Seoul
             - name: JVB_TCP_HARVESTER_DISABLED
               value: "true"
+            - name: PUBLIC_URL
+              value: "https://humble.istudiomeet.com"              
         - name: jvb
-          image: jitsi/jvb:stable-6826
+          image: jitsi/jvb:stable-8719
           imagePullPolicy: IfNotPresent
           env:
             - name: XMPP_SERVER
@@ -149,5 +153,5 @@ spec:
             - name: JVB_BREWERY_MUC
               value: jvbbrewery
             - name: TZ
-              value: America/Los_Angeles
+              value: Asia/Seoul
       serviceAccountName: jitsi
