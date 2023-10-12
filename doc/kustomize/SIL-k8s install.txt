@@ -1,0 +1,26 @@
+1. doctl kubernetes cluster create darim-k8s --count=2 --region=sgp1
+
+2. Follow instruction from Kubernetes on left menu
+
+3. https://github.com/humble92/jitsi-kubernetes
+
+4. helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+   helm repo update ingress-nginx
+   helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace
+
+5. [K8s name] > resources > Load balancers
+   Get the ip > get the domain
+   DNS A record 편집:
+   or [ip].nip.io
+
+6. kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.2/cert-manager.yaml
+   kubectl get pods --namespace cert-manager
+   kubectl create -f staging_issuer.yaml (Optional)
+   kubectl create -f prod_issuer.yaml
+
+7. kubectl create namespace jitsi
+   kubectl create secret generic jitsi-config -n jitsi --from-literal=JICOFO_COMPONENT_SECRET=dakfjadskf31284731207dfkjlkadsjla --from-literal=JICOFO_AUTH_PASSWORD=dakfjadskf31284731207dfkjlkadsjla --from-literal=JVB_AUTH_PASSWORD=dakfjadskf31284731207dfkjlkadsjla
+
+   (Overview kustomization yaml files)
+
+   kubectl apply -k .

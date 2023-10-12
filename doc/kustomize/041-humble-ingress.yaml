@@ -10,21 +10,21 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     # assign the ingress class
-    # kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: "nginx"
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - humble.istudiomeet.com
-    secretName: tls-jitsi
+    - hosts:
+        - room2.istudiomeet.com
+      secretName: tls-jitsi
   rules:
-  - host: humble.istudiomeet.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web
-            port:
-              number: 80
+    - host: room2.istudiomeet.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80

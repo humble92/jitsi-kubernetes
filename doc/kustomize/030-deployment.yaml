@@ -91,7 +91,7 @@ spec:
             - name: JVB_TCP_HARVESTER_DISABLED
               value: "true"
             - name: PUBLIC_URL
-              value: "https://humble.istudiomeet.com"              
+              value: "https://room2.istudiomeet.com"
         - name: web
           image: jitsi/web:stable-8719
           imagePullPolicy: IfNotPresent
@@ -115,7 +115,7 @@ spec:
             - name: JVB_TCP_HARVESTER_DISABLED
               value: "true"
             - name: PUBLIC_URL
-              value: "https://humble.istudiomeet.com"              
+              value: "https://room2.istudiomeet.com"
         - name: jvb
           image: jitsi/jvb:stable-8719
           imagePullPolicy: IfNotPresent
