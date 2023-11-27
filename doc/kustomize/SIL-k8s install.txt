@@ -3,6 +3,7 @@
 2. Follow instruction from Kubernetes on left menu
 
 3. https://github.com/humble92/jitsi-kubernetes
+   cf. https://github.com/jitsi-contrib/jitsi-kubernetes
 
 4. helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
    helm repo update ingress-nginx
