@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jitsi-helm-ingress
+  namespace: jitsi
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/acme-challenge-type: http01
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  ingressClassName: nginx
+  # This section is only required if TLS is to be enabled for the Ingress
+  tls:
+    - hosts:
+        - cluster.istudiomeet.com
+      secretName: tls-jitsi
+  rules:
+    - host: cluster.istudiomeet.com
+      http:
+        paths:
+          - pathType: Prefix
+            backend:
+              service:
+                name: istudiomeet-helm-jitsi-meet-web
+                port:
+                  number: 80
+            path: /

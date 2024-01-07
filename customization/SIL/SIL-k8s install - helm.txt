@@ -1,0 +1,40 @@
+1. doctl kubernetes cluster create darim-k8s-new --count=2 --region=sgp1
+
+2. Follow instruction from Kubernetes on left menu
+
+3. https://github.com/humble92/jitsi-kubernetes
+   cf. https://github.com/jitsi-contrib/jitsi-helm
+
+4. helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+   helm repo update ingress-nginx
+   helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace
+
+5. [K8s name] > resources > Load balancers
+   Get the ip > get the domain
+   DNS A record 편집:
+   or [ip].nip.io
+
+6. cert-manager
+   kubectl create namespace cert-manager
+   helm repo add jetstack https://charts.jetstack.io
+   helm repo update
+   helm show values jetstack/cert-manager
+   helm install cert-manager jetstack/cert-manager --namespace cert-manager --set installCRDs=true
+
+   kubectl create -f staging_issuer.yaml (Optional)
+   kubectl create -f prod_issuer.yaml
+
+7. Jitsi installation
+
+   (Overview values.yaml files)
+
+   kubectl create namespace jitsi
+
+   cd (dir containg values.yaml)
+
+   kubectl apply -f ingress.yaml
+
+   helm install --namespace jitsi istudiomeet-helm jitsi/jitsi-meet --values=values.yaml
+      cf. helm upgrade --namespace jitsi istudiomeet-helm jitsi/jitsi-meet --values=values.yaml
+
+   helm uninstall istudiomeet-helm jitsi/jitsi-meet -n jitsi

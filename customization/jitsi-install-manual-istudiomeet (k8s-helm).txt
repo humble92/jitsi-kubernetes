@@ -1,0 +1,309 @@
+Entry point: 
+  https://github.com/jitsi-contrib/jitsi-kubernetes
+  https://github.com/jitsi-contrib/jitsi-helm
+
+
+
+https://docs.digitalocean.com/reference/doctl/how-to/install/
+  darim-k8s-new: dop_v1_32b88ef47aeacadb320b295322de7fbbe839e9cfd441f676ecb32a60a2265415
+
+
+doctl auth init --context <NAME>
+doctl auth list
+doctl auth switch --context <NAME>
+doctl auth remove --context <NAME>
+
+Or
+
+kubectl config get-clusters
+kubectl config get-contexts
+kubectl config get-users
+    cf. kubectl config delete-context  do-sgp1-k8s-1-27-2-do-0-sgp1-1688488794472
+    cf. kubectl config delete-cluster arn:aws:eks:us-east-1:603979416745:cluster/mc-eks-cluster
+    cf. kubectl config delete-user arn:aws:eks:us-east-1:603979416745:cluster/mc-eks-cluster
+
+kubectl config use-context docker-desktop   
+    cf. doctl kubernetes cluster kubeconfig remove do-sgp1-k8s-1-27-2-do-0-sgp1-1688488794472
+
+kubectl cluster-info
+kubectl version
+
+******************************
+        [Installing helm]
+******************************
+
+https://helm.sh/docs/intro/install/
+https://www.digitalocean.com/community/tutorials/how-to-install-software-on-kubernetes-clusters-with-the-helm-3-package-manager
+https://docs.digitalocean.com/products/kubernetes/how-to/manage-1click-apps/#installing-via-control-panel
+
+
+************************************************
+        [Installing ingress-nginx package]
+************************************************
+cf. (general) kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/cloud/deploy.yaml
+cf. (DO specific) kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/do/deploy.yaml
+
+    cf. kubectl get pods -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx --watch
+
+    cf. doctl compute load-balancer list
+    
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update ingress-nginx
+helm search repo ingress-nginx
+
+    cf. helm show values ingress-nginx --repo https://kubernetes.github.io/ingress-nginx
+    cf. helm show values ingress-nginx/ingress-nginx
+
+helm upgrade --install ingress-nginx ingress-nginx  --repo https://kubernetes.github.io/ingress-nginx  --namespace ingress-nginx --create-namespace
+    cf. helm install nginx-ingress ingress-nginx/ingress-nginx --set controller.publishService.enabled=true --namespace ingress-nginx --create-namespace
+    cf. kubectl --namespace ingress-nginx get services -o wide -w nginx-ingress-ingress-nginx-controller
+    cf.
+        NGINX_CHART_VERSION="<chart-version>"
+        helm install ingress-nginx ingress-nginx/ingress-nginx --version "$NGINX_CHART_VERSION" \
+        --namespace ingress-nginx \
+        --create-namespace \
+        -f "<path-to-values-file>.yml"
+
+kubectl get svc --namespace=ingress-nginx
+kubectl get pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
+kubectl describe service  --namespace=ingress-nginx ingress-nginx-controller
+kubectl describe -n ingress-nginx secret ingress-nginx-admission
+
+    cf. 업데이트 필요 시 (version 바꾸어서 실행):
+        helm show values ingress-nginx/ingress-nginx > ingress-nginx.values.yml
+        helm upgrade ingress-nginx ingress-nginx/ingress-nginx --version 4.7.1 \
+        --namespace ingress-nginx \
+        --values ingress-nginx.values.yml
+
+
+************************************************
+        [Installing cert manager]
+************************************************
+cf. for latest version
+https://artifacthub.io/packages/helm/cert-manager/cert-manager
+
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.2/cert-manager.yaml
+
+kubectl get pods --namespace cert-manager
+
+kubectl create -f staging_issuer.yaml
+kubectl create -f prod_issuer.yaml
+
+kubectl apply -f ingress_nginx_extraction.yaml
+
+-------------------
+
+kubectl create namespace cert-manager
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm show values jetstack/cert-manager
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.12.2 --set installCRDs=true
+
+    More information on the different types of issuers and how to configure them
+    can be found in our documentation:
+
+    https://cert-manager.io/docs/configuration/
+
+    For information on how to configure cert-manager to automatically provision
+    Certificates for Ingress resources, take a look at the `ingress-shim`
+    documentation:
+
+    https://cert-manager.io/docs/usage/ingress/
+
+cf. https://docs.digitalocean.com/reference/doctl/reference/compute/certificate/list/
+
+************************************************
+        [Installing jitsi meet]
+************************************************
+
+helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
+helm search repo jitsi-meet
+
+kubectl create namespace jitsi
+  cf. Don't need?
+    kubectl apply -f .\ingress-istudiomeet.yml
+    kubectl delete -f .\ingress-istudiomeet.yml    
+    kubectl apply -f ingress-istudiomeet-jvb.yml
+  cf. https://github.com/digitalocean/digitalocean-cloud-controller-manager/blob/master/docs/controllers/services/annotations.md
+  cf.
+    C:\Users\daniel.hwang\Work\darim>kubectl apply -f .\ingress-istudiomeet.yml
+    Warning: annotation "kubernetes.io/ingress.class" is deprecated, please use 'spec.ingressClassName' instead
+    ingress.networking.k8s.io/jitsi-ingress created  
+  
+  cf. kubectl describe ingress --all-namespaces
+  cf. kubectl describe certificate --all-namespaces
+  cf. kubectl describe -n jitsi certificate tls-jitsi
+
+DNS 편집 && values IP 편집: 
+  or [ip].nip.io
+
+helm install --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-istudiomeet.yaml
+  cf. helm upgrade --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-istudiomeet.yaml
+  cf. helm upgrade --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-istudiomeet.yaml --reuse-values
+  cf. kubectl get svc -n jitsi istudiomeet-k8s-jitsi-meet-jvb -o yaml
+  cf. kubectl edit service istudiomeet-k8s-jitsi-meet-jvb -n jitsi
+  
+  cf. helm uninstall istudiomeet-k8s jitsi/jitsi-meet -n jitsi
+
+  cf. kubectl get svc --namespace jitsi istudiomeet-k8s-jitsi-meet-web --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}
+  cf. https://github.com/jitsi-contrib/jitsi-helm/blob/main/values.yaml
+  cf.
+    Release "istudiomeet-k8s" has been upgraded. Happy Helming!
+    NAME: istudiomeet-k8s
+    LAST DEPLOYED: Wed Jul  5 01:31:31 2023
+    NAMESPACE: jitsi
+    STATUS: deployed
+    REVISION: 11
+    NOTES:
+    1. Get the application URL by running these commands:
+      https://room2.istudiomeet.com/
+  cf. 
+    NAME: istudiomeet-k8s
+    LAST DEPLOYED: Tue Jul  4 23:06:50 2023
+    NAMESPACE: jitsi
+    STATUS: deployed
+    REVISION: 1
+    NOTES:
+    1. Get the application URL by running these commands:
+        NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+              You can watch the status of by running 'kubectl get --namespace jitsi svc -w istudiomeet-k8s-jitsi-meet-web'
+      export SERVICE_IP=$(kubectl get svc --namespace jitsi istudiomeet-k8s-jitsi-meet-web --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+      echo http://$SERVICE_IP:80
+  cf. (Wrong configuration)
+    NAME: istudiomeet-k8s
+    LAST DEPLOYED: Tue Jul  4 21:38:34 2023
+    NAMESPACE: jitsi
+    STATUS: deployed
+    REVISION: 1
+    NOTES:
+    1. Get the application URL by running these commands:
+      export POD_NAME=$(kubectl get pods --namespace jitsi -l "app.kubernetes.io/name=jitsi-meet,app.kubernetes.io/component=web,app.kubernetes.io/instance=istudiomeet-k8s" -o jsonpath="{.items[0].metadata.name}")
+      echo "Visit http://127.0.0.1:8080 to use your application"
+      kubectl --namespace jitsi port-forward $POD_NAME 8080:80  
+  cf. kubectl rollout restart -n jitsi deployment istudiomeet-k8s-jitsi-meet-jibri
+
+  cf. wget --save-headers -O- room2.istudiomeet.com
+  cf. curl room2.istudiomeet.com
+  cf. curl https://room2.istudiomeet.com
+  cf. curl -v https://room2.istudiomeet.com
+
+
+
+Tips:
+
+kubectl exec -it -n jitsi svc/istudiomeet-k8s-jitsi-meet-jvb -- /bin/bash
+kubectl logs -n jitsi svc/istudiomeet-k8s-jitsi-meet-jvb
+
+https://github.com/sudermanjr/utilities/blob/master/utility-deploy.yaml
+kubectl exec -it utilities-f4b5c6954-cnnc7 -- /bin/bash
+OR
+kubectl run busybox -it --image=busybox:1.28 --restart=Never --rm
+
+Use cases for droplet:
+
+doctl compute droplet create --region sfo2 --image ubuntu-18-04-x64 --size s-1vcpu-1gb <DROPLET-NAME>
+doctl compute droplet delete <DROPLET-ID>
+
+
+Use cases for serverless:
+
+doctl serverless install
+& see. https://docs.digitalocean.com/products/functions/quickstart/
+
+
+
+cf.
+
+https://kubernetes.io/docs/reference/kubectl/
+https://docs.digitalocean.com/reference/doctl/how-to/install/
+https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes#step-6-issuing-staging-and-production-let-s-encrypt-certificates
+https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-on-digitalocean-kubernetes-using-helm
+
+https://github.com/taktakpeops/jitsi-meet-helm
+
+https://github.com/digitalocean/digitalocean-cloud-controller-manager/tree/master
+
+
+
+https://www.digitalocean.com/community/tutorials/how-to-create-a-kubernetes-cluster-using-kubeadm-on-ubuntu-20-04
+
+
+Release "ingress-nginx" does not exist. Installing it now.
+NAME: ingress-nginx
+LAST DEPLOYED: Tue Jul  4 16:44:15 2023
+NAMESPACE: ingress-nginx
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+The ingress-nginx controller has been installed.
+It may take a few minutes for the LoadBalancer IP to be available.
+You can watch the status by running 'kubectl --namespace ingress-nginx get services -o wide -w ingress-nginx-controller'
+
+An example Ingress that makes use of the controller:
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: example
+    namespace: foo
+  spec:
+    ingressClassName: nginx
+    rules:
+      - host: www.example.com
+        http:
+          paths:
+            - pathType: Prefix
+              backend:
+                service:
+                  name: exampleService
+                  port:
+                    number: 80
+              path: /
+    # This section is only required if TLS is to be enabled for the Ingress
+    tls:
+      - hosts:
+        - www.example.com
+        secretName: example-tls
+
+If TLS is enabled for the Ingress, a Secret containing the certificate and key must also be provided:
+
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: example-tls
+    namespace: foo
+  data:
+    tls.crt: <base64 encoded cert>
+    tls.key: <base64 encoded key>
+  type: kubernetes.io/tls
+
+
+
+nc -vz -u 10.244.0.181 10000
+    netstat -an | findstr ":12345"
+    telnet localhost 12345
+    nc -zvv localhost 12345
+    wget -O /dev/null http://localhost:12345
+    wget -q -O /dev/null host:53
+    curl -s host:53
+    curl localhost:12345
+    telnet host 12345
+    nc host 12345
+    hping -S -p 12345 host
+    dig @host txt blank
+    nslookup host 53
+    mtr host
+    traceroute host
+    ping -n 10 host
+
+    nmap
+    telnet
+    netstat
+    ss
+    lsof
+    fuser
+    netcat
+    nc
+    socat
+    udpdump

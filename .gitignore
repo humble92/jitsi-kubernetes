@@ -13,3 +13,6 @@ target/
 .project
 .classpath
 .htpasswd
+
+# ignore local data and sub git repo
+doc/jitsi-helm

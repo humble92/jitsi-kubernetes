@@ -1,0 +1,31 @@
+###################################################
+# Ingress
+###################################################
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: jitsi-ingress
+  namespace: jitsi
+  annotations:
+    # cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # cert-manager.io/issue-temporary-certificate: 'true'
+    # nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
+    # nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - room2.istudiomeet.com
+    secretName: tls-jitsi
+  rules:
+  - host: room2.istudiomeet.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web
+            port:
+              number: 80
