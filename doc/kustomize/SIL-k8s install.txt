@@ -1,4 +1,10 @@
-1. doctl kubernetes cluster create darim-k8s --count=2 --region=sgp1
+0. API token generation
+   - in DO webpage
+   - doctl auth init --context SIL-tor-K8s
+   - test: doctl account get
+   - cf. https://docs.digitalocean.com/reference/doctl/how-to/install/
+
+1. doctl kubernetes cluster create sil-k8s-kustomize --count=2 --region=sgp1
 
 2. Follow instruction from Kubernetes on left menu
 
