@@ -13,6 +13,7 @@ doctl auth remove --context humble-istudio
 Or
 
 kubectl config get-clusters
+kubectl config get-users
 kubectl config get-contexts
 kubectl config use-context docker-desktop   
     cf. doctl kubernetes cluster kubeconfig remove do-sgp1-k8s-1-27-2-do-0-sgp1-1688488794472

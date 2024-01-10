@@ -117,8 +117,11 @@ cf. https://docs.digitalocean.com/reference/doctl/reference/compute/certificate/
         [Installing jitsi meet]
 ************************************************
 
-helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
+helm repo help
+helm repo list
 helm search repo jitsi-meet
+
+helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
 
 kubectl create namespace jitsi
   cf. Don't need?
