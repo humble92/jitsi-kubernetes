@@ -1,32 +1,46 @@
-1. doctl kubernetes cluster create darim-k8s-new --count=2 --region=sgp1
 
-2. Follow instruction from Kubernetes on left menu
+###########################################################
+# Ready to install jitsi
+###########################################################
 
-3. https://github.com/humble92/jitsi-kubernetes
-   cf. https://github.com/jitsi-contrib/jitsi-kubernetes/blob/main/doc/kustomize/README.md
-
-4. helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-   helm repo update ingress-nginx
-   helm upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace
-
-5. [K8s name] > resources > Load balancers
-   Get the ip > get the domain
-   DNS A record 편집:
-   or [ip].nip.io
-
-6. kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml
-   kubectl get pods --namespace cert-manager
-   kubectl create -f staging_issuer.yaml (Optional)
-   kubectl create -f prod_issuer.yaml
-
-7. kubectl create namespace jitsi
+1. kubectl create namespace jitsi
    kubectl create secret generic jitsi-config -n jitsi --from-literal=JICOFO_COMPONENT_SECRET=dakfjadskf31284731207dfkjlkadsjla --from-literal=JICOFO_AUTH_PASSWORD=dakfjadskf31284731207dfkjlkadsjla --from-literal=JVB_AUTH_PASSWORD=dakfjadskf31284731207dfkjlkadsjla
 
+   cd kustomize
+
    (Overview kustomization yaml files)
+   
+   [030-deployment.yaml]
+      Search for PUBLIC_URL, then modify that to your FQDN
+   [041-humble-ingress.yaml]
+      modify hosts & host
 
    kubectl apply -k .
 
-8. uninstall
+   Check running of jitsi:
+      kubectl get pods -A
 
+   
+--------
+2. Undeploy
    $ kubectl delete -k  .
-   $ kubectl delete namespace jitsi
+   $ kubectl delete namespace jitsi  (Keep this for helm practice)
+
+
+
+
+###########################################################
+# cf.
+###########################################################
+
+[kustomization.yaml]
+
+namespace: jitsi
+bases:
+- github.com/jitsi-contrib/jitsi-kubernetes/doc/kustomize
+
+resources:
+- 041-ingress.yaml
+
+patchesStrategicMerge:
+- 030-deployment.yaml
