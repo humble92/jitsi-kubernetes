@@ -141,19 +141,19 @@ kubectl create namespace jitsi
 DNS 편집 && values IP 편집: 
   or [ip].nip.io
 
-helm install --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-istudiomeet.yaml
-  cf. helm upgrade --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-istudiomeet.yaml
-  cf. helm upgrade --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-istudiomeet.yaml --reuse-values
-  cf. kubectl get svc -n jitsi istudiomeet-k8s-jitsi-meet-jvb -o yaml
-  cf. kubectl edit service istudiomeet-k8s-jitsi-meet-jvb -n jitsi
+helm install --namespace jitsi istudiomeet-helm jitsi/jitsi-meet --values=values-istudiomeet.yaml
+  cf. helm upgrade --namespace jitsi istudiomeet-helm jitsi/jitsi-meet --values=values-istudiomeet.yaml
+  cf. helm upgrade --namespace jitsi istudiomeet-helm jitsi/jitsi-meet --values=values-istudiomeet.yaml --reuse-values
+  cf. kubectl get svc -n jitsi istudiomeet-helm-jitsi-meet-jvb -o yaml
+  cf. kubectl edit service istudiomeet-helm-jitsi-meet-jvb -n jitsi
   
-  cf. helm uninstall istudiomeet-k8s jitsi/jitsi-meet -n jitsi
+  cf. helm uninstall istudiomeet-helm jitsi/jitsi-meet -n jitsi
 
-  cf. kubectl get svc --namespace jitsi istudiomeet-k8s-jitsi-meet-web --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}
+  cf. kubectl get svc --namespace jitsi istudiomeet-helm-jitsi-meet-web --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}
   cf. https://github.com/jitsi-contrib/jitsi-helm/blob/main/values.yaml
   cf.
-    Release "istudiomeet-k8s" has been upgraded. Happy Helming!
-    NAME: istudiomeet-k8s
+    Release "istudiomeet-helm" has been upgraded. Happy Helming!
+    NAME: istudiomeet-helm
     LAST DEPLOYED: Wed Jul  5 01:31:31 2023
     NAMESPACE: jitsi
     STATUS: deployed
@@ -162,7 +162,7 @@ helm install --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-
     1. Get the application URL by running these commands:
       https://room2.istudiomeet.com/
   cf. 
-    NAME: istudiomeet-k8s
+    NAME: istudiomeet-helm
     LAST DEPLOYED: Tue Jul  4 23:06:50 2023
     NAMESPACE: jitsi
     STATUS: deployed
@@ -170,21 +170,21 @@ helm install --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-
     NOTES:
     1. Get the application URL by running these commands:
         NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-              You can watch the status of by running 'kubectl get --namespace jitsi svc -w istudiomeet-k8s-jitsi-meet-web'
-      export SERVICE_IP=$(kubectl get svc --namespace jitsi istudiomeet-k8s-jitsi-meet-web --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+              You can watch the status of by running 'kubectl get --namespace jitsi svc -w istudiomeet-helm-jitsi-meet-web'
+      export SERVICE_IP=$(kubectl get svc --namespace jitsi istudiomeet-helm-jitsi-meet-web --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
       echo http://$SERVICE_IP:80
   cf. (Wrong configuration)
-    NAME: istudiomeet-k8s
+    NAME: istudiomeet-helm
     LAST DEPLOYED: Tue Jul  4 21:38:34 2023
     NAMESPACE: jitsi
     STATUS: deployed
     REVISION: 1
     NOTES:
     1. Get the application URL by running these commands:
-      export POD_NAME=$(kubectl get pods --namespace jitsi -l "app.kubernetes.io/name=jitsi-meet,app.kubernetes.io/component=web,app.kubernetes.io/instance=istudiomeet-k8s" -o jsonpath="{.items[0].metadata.name}")
+      export POD_NAME=$(kubectl get pods --namespace jitsi -l "app.kubernetes.io/name=jitsi-meet,app.kubernetes.io/component=web,app.kubernetes.io/instance=istudiomeet-helm" -o jsonpath="{.items[0].metadata.name}")
       echo "Visit http://127.0.0.1:8080 to use your application"
       kubectl --namespace jitsi port-forward $POD_NAME 8080:80  
-  cf. kubectl rollout restart -n jitsi deployment istudiomeet-k8s-jitsi-meet-jibri
+  cf. kubectl rollout restart -n jitsi deployment istudiomeet-helm-jitsi-meet-jibri
 
   cf. wget --save-headers -O- room2.istudiomeet.com
   cf. curl room2.istudiomeet.com
@@ -195,8 +195,8 @@ helm install --namespace jitsi istudiomeet-k8s jitsi/jitsi-meet --values=values-
 
 Tips:
 
-kubectl exec -it -n jitsi svc/istudiomeet-k8s-jitsi-meet-jvb -- /bin/bash
-kubectl logs -n jitsi svc/istudiomeet-k8s-jitsi-meet-jvb
+kubectl exec -it -n jitsi svc/istudiomeet-helm-jitsi-meet-jvb -- /bin/bash
+kubectl logs -n jitsi svc/istudiomeet-helm-jitsi-meet-jvb
 
 https://github.com/sudermanjr/utilities/blob/master/utility-deploy.yaml
 kubectl exec -it utilities-f4b5c6954-cnnc7 -- /bin/bash
