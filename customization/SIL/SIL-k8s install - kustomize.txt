@@ -4,14 +4,14 @@
 ###########################################################
 
 1. kubectl create namespace jitsi
-   kubectl create secret generic jitsi-config -n jitsi --from-literal=JICOFO_COMPONENT_SECRET=dakfjadskf31284731207dfkjlkadsjla --from-literal=JICOFO_AUTH_PASSWORD=dakfjadskf31284731207dfkjlkadsjla --from-literal=JVB_AUTH_PASSWORD=dakfjadskf31284731207dfkjlkadsjla
+
+   export JITSI_SECRET=YOUR_SECRET
+   kubectl create secret generic jitsi-config -n jitsi --from-literal=JICOFO_COMPONENT_SECRET=$JITSI_SECRET --from-literal=JICOFO_AUTH_PASSWORD=$JITSI_SECRET --from-literal=JVB_AUTH_PASSWORD=$JITSI_SECRET
 
    cd kustomize
 
    (Overview kustomization yaml files)
    
-   [030-deployment.yaml]
-      Search for PUBLIC_URL, then modify that to your FQDN
    [041-humble-ingress.yaml]
       modify hosts & host
 
