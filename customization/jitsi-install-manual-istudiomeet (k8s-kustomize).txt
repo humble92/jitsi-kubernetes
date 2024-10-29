@@ -24,6 +24,14 @@ kubectl config use-context docker-desktop
 kubectl cluster-info
 kubectl version
 
+
+******************************
+        [doctl]
+******************************
+doctl kubernetes cluster create si-cluster --tag do-tutorial --auto-upgrade=true --node-pool "name=mypool;count=2;auto-scale=true;min-nodes=2;max-nodes=3;tag=flask-si"
+doctl registry kubernetes-manifest | kubectl apply -f -
+
+
 ******************************
         [Installing helm]
 ******************************

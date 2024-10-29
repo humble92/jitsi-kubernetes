@@ -18,8 +18,8 @@ Or
 kubectl config get-clusters
 kubectl config get-contexts
 kubectl config get-users
-    cf. kubectl config delete-context  do-sgp1-k8s-1-27-2-do-0-sgp1-1688488794472
     cf. kubectl config delete-cluster arn:aws:eks:us-east-1:603979416745:cluster/mc-eks-cluster
+    cf. kubectl config delete-context  do-sgp1-k8s-1-27-2-do-0-sgp1-1688488794472
     cf. kubectl config delete-user arn:aws:eks:us-east-1:603979416745:cluster/mc-eks-cluster
 
 kubectl config use-context docker-desktop   
