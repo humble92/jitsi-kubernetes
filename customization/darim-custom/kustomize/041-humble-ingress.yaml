@@ -1,0 +1,27 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: jitsi-darim-jitsi-meet-web
+  namespace: jitsi-darim
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/acme-challenge-type: http01
+    # assign the ingress class
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - istudiomeet.com
+      secretName: tls-jitsi-darim
+  rules:
+    - host: istudiomeet.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80

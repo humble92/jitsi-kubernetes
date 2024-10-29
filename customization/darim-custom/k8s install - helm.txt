@@ -1,0 +1,36 @@
+###########################################################
+# Ready to install jitsi
+###########################################################
+
+1. install
+
+   kubectl create namespace jitsi-darim  (Skip if exists)
+
+   cd jitsi-helm (dir containg values.yaml)
+
+   helm repo add jitsi https://jitsi-contrib.github.io/jitsi-helm/
+
+   [playground]
+      helm repo list
+      helm search repo jitsi/jitsi-meet
+      helm repo update jitsi
+      helm show values jitsi/jitsi-meet
+
+   (Overview values.yaml files)
+      Search for publicURL, then modify that to your FQDN
+      Edit ingress: part
+      Review jvb: part
+      Search for publicIPs, then modify that to your FQDN
+
+   helm install jitsi-darim jitsi/jitsi-meet --values=values.yaml --namespace jitsi-darim
+      cf. helm upgrade jitsi-darim jitsi/jitsi-meet --values=values.yaml --namespace jitsi-darim
+
+
+   Check running of jitsi:
+      kubectl get pods -A
+
+
+--------
+2. Undeploy
+   helm uninstall jitsi-darim -n jitsi-darim
+

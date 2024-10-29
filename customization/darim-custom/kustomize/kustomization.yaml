@@ -1,0 +1,10 @@
+# helm uninstall jitsi-drim -n jitsi-darim
+# export JITSI_SECRET=YOUR_SECRET
+# kubectl create secret generic jitsi-config -n jitsi-darim --from-literal=JICOFO_COMPONENT_SECRET=$JITSI_SECRET --from-literal=JICOFO_AUTH_PASSWORD=$JITSI_SECRET --from-literal=JVB_AUTH_PASSWORD=$JITSI_SECRET
+resources:
+  # - 000-prod_issuer.yaml
+  - 010-jvb-service.yaml
+  # - 020-rbac.yaml
+  - 030-deployment.yaml
+  - 040-web-service.yaml
+  - 041-humble-ingress.yaml
