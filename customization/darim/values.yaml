@@ -1,6 +1,10 @@
-# helm install jitsi-darim jitsi/jitsi-meet --values=values.yaml --namespace jitsi
-# helm upgrade jitsi-darim jitsi/jitsi-meet --values=values.yaml --namespace jitsi
-# helm uninstall jitsi-darim --namespace jitsi
+# helm install jitsi-darim jitsi/jitsi-meet --values=values.yaml --namespace jitsi-darim
+# helm upgrade jitsi-darim jitsi/jitsi-meet --values=values.yaml --namespace jitsi-darim
+# helm get all jitsi-darim --namespace jitsi-darim > humble
+# kubectl exec -n jitsi-darim -it jitsi-darim-jitsi-meet-web-746dbb88b7-t7d8z -- bash
+# kubectl delete pods -l app.kubernetes.io/component=web -n jitsi-darim
+
+# helm uninstall jitsi-darim --namespace jitsi-darim
 
 # Default values for jitsi-meet.
 # This is a YAML-formatted file.
@@ -77,8 +81,19 @@ web:
       _ssl_conf: ""
       _system_config_js: ""
     configs:
-      _custom_interface_config_js: ""
-      _custom_config_js: ""
+      _custom_interface_config_js: |
+        var interfaceConfig = {
+          ...interfaceConfig,
+          APP_NAME: 'iStudioMeet',
+          NATIVE_APP_NAME: 'iStudioMeet',
+          // DEFAULT_WELCOME_PAGE_LOGO_URL: 'https://c5f8-2607-fea8-fcb0-833c-c5c6-9cf-c2e-d81a.ngrok-free.app/watermark.svg',
+          // JITSI_WATERMARK_LINK: 'https://darim.com',
+        };
+      _custom_config_js: |
+        var config = {
+          ...config,
+          // defaultLogoUrl: 'https://c5f8-2607-fea8-fcb0-833c-c5c6-9cf-c2e-d81a.ngrok-free.app/watermark.svg',
+        };
 
   extraEnvs: {}
   service:
